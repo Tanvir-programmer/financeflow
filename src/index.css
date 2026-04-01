@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap");
+
+:root {
+  font-family: "Roboto", sans-serif;
+  --bg-primary: #ffffff;
+  --text-primary: #1e293b;
+}
+
+/* DaisyUI and your manual overrides look for this attribute */
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --text-primary: #f8fafc;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
