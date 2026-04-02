@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Eye,
   ShieldCheck,
@@ -8,42 +8,18 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
+import { Link } from "react-router";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [role, setRole] = useState("Viewer");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Load dark mode preference from localStorage on mount
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
-
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    const newMode = !isDarkMode;
-    setIsDarkMode(newMode);
-
-    if (newMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  };
 
   const navItems = [
-    { name: "Dashboard", icon: "📊" },
-    { name: "Transactions", icon: "📋" },
-    { name: "Insights", icon: "💡" },
+    { name: "Dashboard", icon: "📊", path: "/dashboard" },
+    { name: "Transactions", icon: "📋", path: "/transactions" },
+    { name: "Insights", icon: "💡", path: "/insights" },
   ];
 
   return (
@@ -63,8 +39,9 @@ const Navbar = () => {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1 bg-gray-50 dark:bg-slate-800 p-1 rounded-2xl border border-gray-100 dark:border-slate-700">
             {navItems.map((item) => (
-              <button
+              <Link
                 key={item.name}
+                to={item.path}
                 onClick={() => setActiveTab(item.name)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                   activeTab === item.name
@@ -74,7 +51,7 @@ const Navbar = () => {
               >
                 <span>{item.icon}</span>
                 {item.name}
-              </button>
+              </Link>
             ))}
           </div>
 
@@ -101,7 +78,9 @@ const Navbar = () => {
                 Switch: {role}
                 <ChevronDown
                   size={16}
-                  className={`transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
+                  className={`transition-transform ${
+                    isDropdownOpen ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
@@ -129,14 +108,13 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Dark Mode Toggle */}
-           <button
-  onClick={toggleDarkMode}
-  className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 text-yellow-400 dark:text-yellow-400 transition-colors"
-  title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
->
-  {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-</button>
+            {/* 🌗 Dark Mode Toggle (UI ONLY) */}
+            <button
+              className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 text-yellow-400 transition-colors"
+              title="Toggle Theme"
+            >
+              <Moon size={20} />
+            </button>
 
             {/* Mobile Menu Button */}
             <button
