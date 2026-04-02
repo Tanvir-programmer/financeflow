@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Eye,
-  ShieldCheck,
-  ChevronDown,
-  Menu,
-  X,
-  Sun,
-  Moon,
-} from "lucide-react";
+import { Eye, ShieldCheck, ChevronDown, Menu, X, Moon } from "lucide-react";
 import { Link } from "react-router";
 
 const Navbar = () => {
@@ -23,105 +15,96 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-white dark:bg-slate-900 border-b border-gray-100 dark:border-slate-800 shadow-sm sticky top-0 z-50 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="flex items-center justify-center w-9 h-9 bg-orange-400 rounded-xl shadow-inner">
-              <span className="text-white text-lg">💰</span>
+    <nav className="bg-white border-b border-gray-100 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between h-14">
+          {/* Logo Section */}
+          <Link to="/dashboard" className="flex items-center gap-2.5 shrink-0">
+            <div className="flex items-center justify-center w-8 h-8 bg-[#f59e0b] rounded-lg shadow-sm">
+              <span className="text-sm">💰</span>
             </div>
-            <span className="text-lg font-bold text-slate-800 dark:text-white tracking-tight hidden sm:block">
+            <span className="text-lg font-bold text-slate-800 tracking-tight">
               FinanceFlow
             </span>
-          </div>
+          </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1 bg-gray-50 dark:bg-slate-800 p-1 rounded-2xl border border-gray-100 dark:border-slate-700">
+          {/* Desktop Navigation "Pill" - Smaller Sizing */}
+          <div className="hidden md:flex items-center gap-0.5 bg-[#f8fafc] p-1 rounded-xl border border-gray-50">
             {navItems.map((item) => (
               <Link
-                key={item.name}
                 to={item.path}
+                key={item.name}
                 onClick={() => setActiveTab(item.name)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all ${
                   activeTab === item.name
-                    ? "bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-white"
-                    : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+                    ? "bg-white shadow-sm border border-gray-100 text-slate-900"
+                    : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                <span>{item.icon}</span>
+                <span className="text-xs">{item.icon}</span>
                 {item.name}
               </Link>
             ))}
           </div>
 
-          {/* Right Side */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            {/* Role Badge */}
-            <div
-              className={`hidden xs:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-                role === "Admin"
-                  ? "bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400"
-                  : "bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400"
-              }`}
-            >
-              {role === "Admin" ? <ShieldCheck size={14} /> : <Eye size={14} />}
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-2.5">
+            {/* Viewer Badge - Compact */}
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-[#f5f3ff] text-[#7c3aed] rounded-full text-[11px] font-bold uppercase tracking-wider">
+              <Eye size={13} />
               {role}
             </div>
 
-            {/* Role Switcher */}
+            {/* Role Switcher - Compact */}
             <div className="relative hidden sm:block">
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800"
+                className="flex items-center gap-2 px-3 py-1.5 border border-gray-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-gray-50 transition-colors"
               >
                 Switch: {role}
                 <ChevronDown
-                  size={16}
-                  className={`transition-transform ${
+                  size={14}
+                  className={`transition-transform duration-200 ${
                     isDropdownOpen ? "rotate-180" : ""
                   }`}
                 />
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-xl shadow-lg py-1 z-50">
+                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-lg py-1.5 z-50">
                   <button
                     onClick={() => {
                       setRole("Admin");
                       setIsDropdownOpen(false);
                     }}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 hover:bg-gray-50"
                   >
-                    <ShieldCheck size={14} /> Admin
+                    <ShieldCheck size={14} className="text-indigo-500" /> Admin
                   </button>
                   <button
                     onClick={() => {
                       setRole("Viewer");
                       setIsDropdownOpen(false);
                     }}
-                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 hover:bg-gray-50"
                   >
-                    <Eye size={14} /> Viewer
+                    <Eye size={14} className="text-purple-500" /> Viewer
                   </button>
                 </div>
               )}
             </div>
 
-            {/* 🌗 Dark Mode Toggle (UI ONLY) */}
-            <button
-              className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 text-yellow-400 transition-colors"
-              title="Toggle Theme"
-            >
-              <Moon size={20} />
+            {/* Dark Mode Icon - Small Circle */}
+            <button className="p-2 bg-white border border-gray-100 rounded-full text-orange-400 hover:bg-gray-50 shadow-sm">
+              <Moon size={16} fill="currentColor" />
             </button>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Toggle */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800"
+              className="md:hidden p-1.5 text-slate-500"
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
@@ -129,7 +112,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 p-4 space-y-4 shadow-xl">
+        <div className="md:hidden bg-white border-t border-gray-100 p-3 space-y-1">
           {navItems.map((item) => (
             <button
               key={item.name}
@@ -137,10 +120,10 @@ const Navbar = () => {
                 setActiveTab(item.name);
                 setIsOpen(false);
               }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl w-full text-left ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-left text-sm font-medium ${
                 activeTab === item.name
-                  ? "bg-gray-50 dark:bg-slate-800 text-slate-900 dark:text-white"
-                  : "text-slate-500 dark:text-slate-400"
+                  ? "bg-slate-50 text-slate-900"
+                  : "text-slate-500"
               }`}
             >
               <span>{item.icon}</span>
