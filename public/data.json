@@ -1,0 +1,36 @@
+{
+  "dashboard_summary": [
+    {
+      "title": "TOTAL BALANCE",
+      "value": "$21,030.00",
+      "subtitle": "Starting + net savings",
+      "trend": null
+    },
+    {
+      "title": "TOTAL INCOME",
+      "value": "$29,400.00",
+      "subtitle": null,
+      "trend": {
+        "percentage": "11.8%",
+        "direction": "down",
+        "period": "last month"
+      }
+    },
+    {
+      "title": "TOTAL EXPENSES",
+      "value": "$10,370.00",
+      "subtitle": null,
+      "trend": {
+        "percentage": "1.5%",
+        "direction": "down",
+        "period": "last month"
+      }
+    },
+    {
+      "title": "SAVINGS RATE",
+      "value": "64.7%",
+      "status": "On track",
+      "progress_bar_percentage": 64.7
+    }
+  ]
+}
