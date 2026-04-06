@@ -165,18 +165,7 @@ The application is fully responsive and works seamlessly across:
 4. Test thoroughly
 5. Submit a pull request
 
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 🙏 Acknowledgments
-
-- Built with [Vite](https://vitejs.dev/)
-- Styled with [Tailwind CSS](https://tailwindcss.com/) and [DaisyUI](https://daisyui.com/)
-- Charts powered by [Recharts](https://recharts.org/)
-- Icons from [Lucide React](https://lucide.dev/)
-
-### Notes
+#Notes
 
 - The app is intentionally static/mock data-first with no backend.
 - Addition: saving into local storage for improved demo flow.
