@@ -186,12 +186,16 @@ export const FinanceProvider = ({ children }) => {
     const byMonth = {};
     transactions.forEach((t) => {
       const month = t.date.slice(0, 7);
-      const value = t.type === "income" ? +t.amount : -+t.amount;
-      byMonth[month] = (byMonth[month] || 0) + value;
+      if (!byMonth[month]) byMonth[month] = { income: 0, expense: 0 };
+      if (t.type === "income") {
+        byMonth[month].income += +t.amount;
+      } else {
+        byMonth[month].expense += +t.amount;
+      }
     });
     return Object.entries(byMonth)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([month, value]) => ({ month, value }));
+      .map(([month, { income, expense }]) => ({ month, income, expense }));
   }, [transactions]);
 
   const categoryBreakdown = useMemo(() => {
@@ -207,7 +211,7 @@ export const FinanceProvider = ({ children }) => {
       .map(([category, value]) => ({
         category,
         value,
-        pct: totalExpense ? (value / totalExpense) * 100 : 0,
+        percent: totalExpense ? Math.round((value / totalExpense) * 100) : 0,
       }));
   }, [transactions]);
 

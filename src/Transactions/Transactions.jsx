@@ -91,7 +91,7 @@ const Transactions = () => {
       description: tx.description,
       category: tx.category,
       type: tx.type,
-      amount: tx.amount,
+      amount: String(tx.amount),
     });
   };
 
@@ -217,12 +217,14 @@ const Transactions = () => {
                   {role === "Admin" && (
                     <td className="flex gap-2">
                       <button
+                        type="button"
                         className="btn btn-xs btn-outline"
                         onClick={() => startEdit(t)}
                       >
                         Edit
                       </button>
                       <button
+                        type="button"
                         className="btn btn-xs btn-error"
                         onClick={() => deleteTransaction(t.id)}
                       >
@@ -245,6 +247,80 @@ const Transactions = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Edit Modal */}
+      {editing && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Edit Transaction</h3>
+            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              <input
+                type="date"
+                value={formState.date}
+                onChange={(e) =>
+                  setFormState((p) => ({ ...p, date: e.target.value }))
+                }
+                className="input input-bordered w-full"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                value={formState.description}
+                onChange={(e) =>
+                  setFormState((p) => ({ ...p, description: e.target.value }))
+                }
+                className="input input-bordered w-full"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Category"
+                value={formState.category}
+                onChange={(e) =>
+                  setFormState((p) => ({ ...p, category: e.target.value }))
+                }
+                className="input input-bordered w-full"
+                required
+              />
+              <select
+                value={formState.type}
+                onChange={(e) =>
+                  setFormState((p) => ({ ...p, type: e.target.value }))
+                }
+                className="select select-bordered w-full"
+                required
+              >
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+              <input
+                type="number"
+                step="0.01"
+                placeholder="Amount"
+                value={formState.amount}
+                onChange={(e) =>
+                  setFormState((p) => ({ ...p, amount: e.target.value }))
+                }
+                className="input input-bordered w-full"
+                required
+              />
+              <div className="modal-action">
+                <button type="submit" className="btn btn-primary">
+                  Update
+                </button>
+                <button
+                  type="button"
+                  onClick={clearForm}
+                  className="btn btn-outline"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {role === "Admin" ? (
         <div className="p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700">

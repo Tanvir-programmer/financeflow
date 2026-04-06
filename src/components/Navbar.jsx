@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Eye, ShieldCheck, ChevronDown, Menu, X, Moon } from "lucide-react";
+import {
+  Eye,
+  ShieldCheck,
+  ChevronDown,
+  Menu,
+  X,
+  Moon,
+  Sun,
+} from "lucide-react";
 import { Link } from "react-router";
 import { useFinance } from "../context/FinanceContext";
 
@@ -92,12 +100,19 @@ const Navbar = () => {
             <button
               className="p-2 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-full text-orange-400 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm"
               onClick={() => setDarkMode((prev) => !prev)}
-              aria-label="Toggle dark mode"
+              aria-label={
+                darkMode ? "Switch to light mode" : "Switch to dark mode"
+              }
             >
-              <Moon size={16} fill="currentColor" />
+              {darkMode ? (
+                <Sun size={16} />
+              ) : (
+                <Moon size={16} fill="currentColor" />
+              )}
             </button>
 
             <button
+              type="button"
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-1.5 text-slate-500 dark:text-slate-300"
             >

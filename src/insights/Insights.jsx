@@ -1,13 +1,14 @@
 import React from "react";
 import { useFinance } from "../context/FinanceContext";
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 
 const formatMoney = (value) =>
@@ -18,181 +19,163 @@ const formatMoney = (value) =>
   }).format(value);
 
 const Insights = () => {
-  const { totals, monthlyTrend, highestSpendingCategory } = useFinance();
+  // Destructure data from your context
+  const { totals, monthlyTrend = [], categoryBreakdown = [] } = useFinance();
 
-  const trendUp =
-    monthlyTrend.length >= 2
-      ? monthlyTrend[monthlyTrend.length - 1].value -
-        monthlyTrend[monthlyTrend.length - 2].value
-      : 0;
+  // Helper for progress bar colors
+  const getBarColor = (index) => {
+    const colors = ["#3b82f6", "#f59e0b", "#ef4444", "#10b981", "#8b5cf6"];
+    return colors[index % colors.length];
+  };
 
   return (
-    <section className="space-y-8 animate-in fade-in duration-700">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            Financial Insights
-          </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">
-            Real-time analysis of your spending and savings behavior.
-          </p>
-        </div>
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8 space-y-8 font-sans text-slate-900">
+      {/* 1. Header */}
+      <div>
+        <h1 className="text-3xl font-extrabold tracking-tight">
+          Financial Insights
+        </h1>
+        <p className="text-slate-500 mt-1">
+          Detailed analysis of your monthly performance.
+        </p>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatCard
-          label="Top Category"
-          value={highestSpendingCategory?.category || "N/A"}
-          subValue={formatMoney(highestSpendingCategory?.value || 0)}
-          color="indigo"
-        />
-        <StatCard
-          label="Current Balance"
-          value={formatMoney(totals.balance)}
-          subValue="Available Funds"
-          color="emerald"
-        />
-        <StatCard
-          label="Trend"
-          value={trendUp >= 0 ? "Improving" : "Declining"}
-          subValue={`${trendUp >= 0 ? "+" : ""}${formatMoney(trendUp)} vs last month`}
-          color={trendUp >= 0 ? "emerald" : "rose"}
-          isTrend
-          positive={trendUp >= 0}
-        />
-      </div>
+      {/* 2. Main Comparison Chart Card */}
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+        <h2 className="text-lg font-bold mb-6">Income vs Expenses</h2>
 
-      {/* Main Chart Section */}
-      <div className="p-6 bg-white dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="mb-6">
-          <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
-            Performance Over Time
-          </h2>
-          <p className="text-sm text-slate-500">
-            Monthly net-worth progression
-          </p>
-        </div>
-
+        {/* CRITICAL: This div MUST have a height for ResponsiveContainer to work */}
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={monthlyTrend}>
-              <defs>
-                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0.01} />
-                </linearGradient>
-              </defs>
+            <BarChart
+              data={monthlyTrend}
+              margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+            >
               <CartesianGrid
                 strokeDasharray="3 3"
                 vertical={false}
-                stroke="#e2e8f0"
-                opacity={0.5}
+                stroke="#f1f5f9"
               />
               <XAxis
                 dataKey="month"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#94a3b8", fontSize: 12, fontWeight: 500 }}
+                tick={{ fill: "#64748b", fontSize: 12 }}
                 dy={10}
               />
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#94a3b8", fontSize: 12 }}
-                tickFormatter={(val) => `$${val}`}
+                tick={{ fill: "#64748b", fontSize: 12 }}
+                tickFormatter={(val) => `$${val / 1000}k`}
               />
               <Tooltip
+                cursor={{ fill: "#f8fafc" }}
                 contentStyle={{
                   borderRadius: "12px",
                   border: "none",
                   boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-                  backgroundColor: "#fff",
                 }}
               />
-              <Area
-                type="monotone"
-                dataKey="value"
-                stroke="#10b981"
-                strokeWidth={3}
-                fill="url(#chartGradient)"
-                animationDuration={1500}
+              <Legend
+                verticalAlign="top"
+                align="right"
+                iconType="circle"
+                height={40}
               />
-            </AreaChart>
+              <Bar
+                dataKey="income"
+                name="Income"
+                fill="#10b981"
+                radius={[4, 4, 0, 0]}
+                barSize={35}
+              />
+              <Bar
+                dataKey="expense"
+                name="Expenses"
+                fill="#f43f5e"
+                radius={[4, 4, 0, 0]}
+                barSize={35}
+              />
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Narrative Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-6 bg-slate-900 text-white rounded-2xl shadow-xl">
-          <h2 className="text-xl font-bold mb-4">Smart Summary</h2>
-          <div className="space-y-4">
-            <NarrativeItem
-              text={`Your savings rate is ${totals.savingsRate.toFixed(1)}%`}
-              subtext={
-                totals.savingsRate > 20
-                  ? "Excellent! Above the 20% rule."
-                  : "Try to reach 20% for optimal growth."
-              }
-            />
-            <NarrativeItem
-              text={`Income vs Expenses`}
-              subtext={
-                totals.income >= totals.expense
-                  ? `You kept ${formatMoney(totals.income - totals.expense)} in surplus this period.`
-                  : "You spent more than you earned."
-              }
-            />
-          </div>
-        </div>
-
-        <div className="p-6 bg-indigo-50 dark:bg-slate-800 rounded-2xl border border-indigo-100 dark:border-slate-700">
-          <h2 className="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-2">
-            Recommendation
-          </h2>
-          <p className="text-indigo-800/80 dark:text-slate-300 leading-relaxed">
-            Based on your spending in{" "}
-            <span className="font-bold">
-              {highestSpendingCategory?.category}
-            </span>
-            , cutting back by just 10% could increase your annual savings by{" "}
-            {formatMoney((highestSpendingCategory?.value || 0) * 0.1 * 12)}.
-          </p>
+      {/* 3. Spending Breakdown Section */}
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+        <h2 className="text-lg font-bold mb-6">Category Spending Breakdown</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+          {categoryBreakdown.length > 0 ? (
+            categoryBreakdown.map((item, index) => (
+              <div key={index} className="space-y-3">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="font-semibold text-slate-700 flex items-center gap-2">
+                    {item.icon || "💰"} {item.category}
+                  </span>
+                  <span className="text-slate-500 font-medium">
+                    {formatMoney(item.value)} •{" "}
+                    <span className="text-slate-900 font-bold">
+                      {item.percent}%
+                    </span>
+                  </span>
+                </div>
+                <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-1000 ease-out"
+                    style={{
+                      width: `${item.percent}%`,
+                      backgroundColor: getBarColor(index),
+                    }}
+                  />
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-slate-400 text-sm">
+              No category data available.
+            </p>
+          )}
         </div>
       </div>
-    </section>
+
+      {/* 4. Bottom Grid: Progress & Alerts */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Savings Progress Card */}
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+          <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
+            Savings Target Progress
+          </h2>
+          <div className="flex justify-between items-end mb-3">
+            <span className="text-2xl font-black text-slate-900">
+              Goal: $10,000
+            </span>
+            <span className="text-emerald-600 font-bold">65% Progress</span>
+          </div>
+          <div className="h-4 w-full bg-slate-100 rounded-full overflow-hidden mb-3">
+            <div className="h-full bg-emerald-500 rounded-full w-[65%] shadow-inner" />
+          </div>
+          <p className="text-xs text-slate-500">
+            Current Contributions:{" "}
+            <span className="font-bold text-slate-700">$6,500.00</span>
+          </p>
+        </div>
+
+        {/* Alert Card */}
+        <div className="bg-rose-50 border border-rose-100 rounded-2xl p-6 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1.5 h-full bg-rose-500" />
+          <h2 className="text-rose-900 font-bold mb-2">Top Spending Alert</h2>
+          <p className="text-sm text-rose-800/80 leading-relaxed">
+            <span className="font-bold text-rose-600">ALERT:</span> Your
+            subscription spending is 25% higher than last month.
+          </p>
+          <button className="mt-4 w-full py-2 bg-white border border-rose-200 text-rose-600 text-xs font-bold rounded-lg hover:bg-rose-100 transition-all">
+            Review Transactions
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
-
-/* Helper Components for cleaner code */
-const StatCard = ({ label, value, subValue, color, isTrend, positive }) => (
-  <div className="group p-5 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-      {label}
-    </h3>
-    <div className="flex flex-col">
-      <span className={`text-2xl font-bold text-slate-800 dark:text-slate-100`}>
-        {value}
-      </span>
-      <span
-        className={`text-sm mt-1 font-medium ${isTrend ? (positive ? "text-emerald-500" : "text-rose-500") : "text-slate-500"}`}
-      >
-        {subValue}
-      </span>
-    </div>
-  </div>
-);
-
-const NarrativeItem = ({ text, subtext }) => (
-  <div className="flex gap-3">
-    <div className="mt-1.5 h-2 w-2 rounded-full bg-emerald-400 shrink-0" />
-    <div>
-      <p className="font-medium text-slate-100">{text}</p>
-      <p className="text-sm text-slate-400">{subtext}</p>
-    </div>
-  </div>
-);
 
 export default Insights;
